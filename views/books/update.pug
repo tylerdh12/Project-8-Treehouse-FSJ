@@ -1,0 +1,15 @@
+extends ../layout
+
+block content
+    h1= title
+
+    include error
+
+    form(method='POST', action="/books/" + book.id + "/book_details")
+        include form
+        p
+            input(type="submit" name="update_button" value="Update Book")
+        p
+            a(class="button" href="/books") Cancel
+        p
+            a(class="button" href="/books/" + book.id + "/delete") Delete Book

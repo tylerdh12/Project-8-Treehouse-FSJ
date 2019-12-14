@@ -1,0 +1,29 @@
+{
+  "name": "sql-library-manager",
+  "description": "SQL Library Manager",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "start": "nodemon ./bin/www"
+  },
+  "author": "Tyler Harper",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/tylerdh12/Project-8-TeamTreehouse-FSJ/issues"
+  },
+  "dependencies": {
+    "cookie-parser": "~1.4.4",
+    "debug": "~2.6.9",
+    "express": "~4.16.1",
+    "http-errors": "~1.6.3",
+    "moment": "^2.24.0",
+    "morgan": "~1.9.1",
+    "nodemon": "^2.0.1",
+    "pug": "^2.0.4",
+    "sequelize": "^5.21.2",
+    "sqlite3": "^4.1.1"
+  },
+  "devDependencies": {
+    "sequelize-cli": "^5.5.1"
+  }
+}
