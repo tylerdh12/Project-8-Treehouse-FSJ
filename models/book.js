@@ -18,7 +18,15 @@ module.exports = sequelize => {
           }
         }
       },
-      author: Sequelize.STRING,
+      author: {
+        type: Sequelize.STRING,
+        allowNull: false,
+        validate: {
+          notEmpty: {
+            msg: '"Author" is required'
+          }
+        }
+      },
       genre: Sequelize.STRING,
       year: Sequelize.INTEGER
     },
