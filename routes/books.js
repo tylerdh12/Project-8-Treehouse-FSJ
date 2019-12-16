@@ -2,6 +2,19 @@ var express = require("express");
 var router = express.Router();
 const Book = require("../models").Book;
 
+const pageSize = 30;
+const page = 1;
+
+const paginate = ({ page, pageSize }) => {
+  const offset = page;
+  const limit = pageSize;
+
+  return {
+    offset,
+    limit
+  };
+};
+
 /* Handler function to wrap each route. */
 function asyncHandler(cb) {
   return async (req, res, next) => {
@@ -17,7 +30,10 @@ function asyncHandler(cb) {
 router.get(
   "/",
   asyncHandler(async (req, res) => {
-    const books = await Book.findAll({ order: [["title", "ASC"]] });
+    const books = await Book.findAll({
+      order: [["title", "ASC"]],
+      ...paginate({ page, pageSize })
+    });
     res.render("books/index", { books, title: "Books" });
   })
 );
