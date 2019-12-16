@@ -3,9 +3,9 @@ extends ../layout
 block content
     h1= title
     p 
-        | Are you sure you want to delete
+        | Are you sure you want to delete "
         em= book.title
-        | ?
+        |" ?
     form(action="/books/" + book.id + "/delete" method="POST")
         a(href="/books/") Nevermind!
         |

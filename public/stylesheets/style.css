@@ -25,15 +25,6 @@ input[type="submit"] {
   cursor: pointer;
 }
 
-a .anchorLeft {
-  float: left;
-  margin-left: 100px;
-  margin-top: 30px;
-}
-
-a.anchorRight {
-}
-
 form a.button,
 input[type="submit"] {
   margin-left: 140px;
@@ -106,4 +97,23 @@ input[type="text"] {
 
 .error {
   color: rgb(236, 15, 15);
+}
+
+/* This is the modified css elements that I added for my project */
+
+a.anchorLeft {
+  float: left;
+  margin-left: 100px;
+  margin-top: 30px;
+}
+
+a.anchorRight {
+  float: right;
+  margin-right: 100px;
+  margin-top: 30px;
+}
+
+#searchInput {
+  float: right;
+  margin-block-start: 1.8em;
 }

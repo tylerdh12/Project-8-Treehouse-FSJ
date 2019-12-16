@@ -1,6 +1,7 @@
 extends ../layout
 
 block content
+  input(name="search" type="text" id="searchInput" placeholder="Search")
   h1= title
   p
     a(href="/books/new", class="button") Create New Book
@@ -20,5 +21,4 @@ block content
             td= book.genre
             td= book.year
 
-  div(style="text-align: center")
-    include paginate
+  include paginate

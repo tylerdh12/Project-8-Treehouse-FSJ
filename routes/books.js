@@ -2,19 +2,6 @@ var express = require("express");
 var router = express.Router();
 const Book = require("../models").Book;
 
-const pageSize = 30;
-const page = 1;
-
-const paginate = ({ page, pageSize }) => {
-  const offset = page;
-  const limit = pageSize;
-
-  return {
-    offset,
-    limit
-  };
-};
-
 /* Handler function to wrap each route. */
 function asyncHandler(cb) {
   return async (req, res, next) => {
@@ -31,8 +18,7 @@ router.get(
   "/",
   asyncHandler(async (req, res) => {
     const books = await Book.findAll({
-      order: [["title", "ASC"]],
-      ...paginate({ page, pageSize })
+      order: [["title", "ASC"]]
     });
     res.render("books/index", { books, title: "Books" });
   })
@@ -40,7 +26,7 @@ router.get(
 
 // get /books/new - Shows the create new book form.
 router.get("/new", (req, res) => {
-  res.render("books/new", { book: {}, title: "New Book" });
+  res.render("books/new-book", { book: {}, title: "New Book" });
 });
 
 // post /books/new - Posts a new book to the database.
@@ -55,7 +41,7 @@ router.post(
       if (error.name === "SequelizeValidationError") {
         // checking the error
         book = await Book.build(req.body);
-        res.render("books/new", {
+        res.render("books/new-book", {
           book,
           errors: error.errors,
           title: "New Book"
@@ -85,7 +71,7 @@ router.get(
   asyncHandler(async (req, res) => {
     const book = await Book.findByPk(req.params.id);
     if (book) {
-      res.render("books/update", { book, title: "Book Details" });
+      res.render("books/update-book", { book, title: "Book Details" });
     } else {
       res.sendStatus(404);
     }
@@ -109,7 +95,7 @@ router.post(
       if (error.name === "SequelizeValidationError") {
         book = await Book.build(req.body);
         book.id = req.params.id; // make sure correct book gets updated
-        res.render("books/update", {
+        res.render("books/update-book", {
           book,
           errors: error.errors,
           title: "Book Details"
