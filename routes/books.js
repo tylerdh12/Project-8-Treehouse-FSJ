@@ -1,6 +1,8 @@
-var express = require("express");
-var router = express.Router();
+const express = require("express");
+const router = express.Router();
 const Book = require("../models").Book;
+const Sequelize = require("sequelize");
+const Op = Sequelize.Op;
 
 /* Handler function to wrap each route. */
 function asyncHandler(cb) {
@@ -14,13 +16,31 @@ function asyncHandler(cb) {
 }
 
 // get /books - Shows the full list of books.
+
+// the commented sections inside are for pagination 
 router.get(
   "/",
-  asyncHandler(async (req, res) => {
+  asyncHandler(async (req, res, next) => {
+    // const reqPage = parseInt(req.query.page);
+    // const reqLimit = parseInt(req.query.limit);
+
+    // const startIndex = (reqPage - 1) * reqLimit;
+
     const books = await Book.findAll({
       order: [["title", "ASC"]]
+      // limit: reqLimit,
+      // offset: startIndex
     });
-    res.render("books/index", { books, title: "Books" });
+
+    // const booksListed = books.length;
+
+    res.render("books/index", {
+      books,
+      title: "Books"
+      // reqPage,
+      // reqLimit,
+      // booksListed
+    });
   })
 );
 
@@ -133,5 +153,14 @@ router.post(
     }
   })
 );
+
+router.get("/search", async (req, res) => {
+  let search = req.query.search;
+  await Book.findAll({ where: { title: { [Op.like]: "%" + search + "%" } } })
+    .then(books => console.log({ books }))
+    .catch(error => console.log(error));
+});
+
+
 
 module.exports = router;

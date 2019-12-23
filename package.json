@@ -12,7 +12,8 @@
     "url": "https://github.com/tylerdh12/Project-8-TeamTreehouse-FSJ/issues"
   },
   "dependencies": {
-    "cookie-parser": "~1.4.4",
+    "body-parser": "^1.19.0",
+    "cookie-parser": "^1.4.4",
     "debug": "~2.6.9",
     "express": "~4.16.1",
     "http-errors": "~1.6.3",

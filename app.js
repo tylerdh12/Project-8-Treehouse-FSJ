@@ -24,7 +24,10 @@ app.use("/books", books);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
-  next(createError(404));
+  res.status(404).render("404", {
+    status: 404,
+    errorMessage: "We were unable to find what you were looking for!"
+  });
 });
 
 // error handler
