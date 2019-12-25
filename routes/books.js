@@ -17,30 +17,55 @@ function asyncHandler(cb) {
 
 // get /books - Shows the full list of books.
 
-// the commented sections inside are for pagination 
+// the commented sections inside are for pagination
 router.get(
   "/",
   asyncHandler(async (req, res, next) => {
-    // const reqPage = parseInt(req.query.page);
-    // const reqLimit = parseInt(req.query.limit);
+    const reqPage = parseInt(req.query.page);
+    const reqLimit = parseInt(req.query.limit);
+    const search = req.params.search;
+    const params = `?page=1&limit=${req.limit}`;
+    const startIndex = (reqPage - 1) * reqLimit;
 
-    // const startIndex = (reqPage - 1) * reqLimit;
+    if (search) {
+      const books = await Book.findAll({
+        order: [["title", "ASC"]],
+        limit: reqLimit,
+        offset: startIndex
+      });
 
-    const books = await Book.findAll({
-      order: [["title", "ASC"]]
-      // limit: reqLimit,
-      // offset: startIndex
-    });
+      const booksListed = books.length;
+      const pages = books.length;
 
-    // const booksListed = books.length;
+      res.render("books/index", {
+        books,
+        title: "Armada",
+        reqPage,
+        reqLimit,
+        booksListed,
+        pages,
+        params
+      });
+    } else {
+      const books = await Book.findAll({
+        order: [["title", "ASC"]],
+        limit: reqLimit,
+        offset: startIndex
+      });
 
-    res.render("books/index", {
-      books,
-      title: "Books"
-      // reqPage,
-      // reqLimit,
-      // booksListed
-    });
+      const booksListed = books.length;
+      const pages = books.length;
+
+      res.render("books/index", {
+        books,
+        title: "Books",
+        reqPage,
+        reqLimit,
+        booksListed,
+        pages,
+        params
+      });
+    }
   })
 );
 
@@ -153,14 +178,5 @@ router.post(
     }
   })
 );
-
-router.get("/search", async (req, res) => {
-  let search = req.query.search;
-  await Book.findAll({ where: { title: { [Op.like]: "%" + search + "%" } } })
-    .then(books => console.log({ books }))
-    .catch(error => console.log(error));
-});
-
-
 
 module.exports = router;
