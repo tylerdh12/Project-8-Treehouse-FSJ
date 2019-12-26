@@ -10,6 +10,6 @@ block content
         p
             input(type="submit" name="update_button" value="Update Book")
         p
-            a(class="button" href="/books") Cancel
+            a(class="button" href="/books/" + urlParams) Cancel
         p
             a(class="button" href="/books/" + book.id + "/delete") Delete Book

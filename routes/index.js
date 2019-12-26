@@ -1,9 +1,10 @@
 var express = require("express");
 var router = express.Router();
+const urlParams = "?page=1&limit=5";
 
 /* GET home page. */
-router.get("/", function(req, res, next) {
-  res.redirect("books/?page=1&limit=5");
+router.get("/", function(req, res) {
+  res.redirect("books/" + urlParams);
 });
 
 module.exports = router;

@@ -15,63 +15,62 @@ function asyncHandler(cb) {
   };
 }
 
+const urlParams = "?page=1&limit=5";
 // get /books - Shows the full list of books.
 
 // the commented sections inside are for pagination
 router.get(
   "/",
-  asyncHandler(async (req, res, next) => {
+  asyncHandler(async (req, res) => {
     const reqPage = parseInt(req.query.page);
     const reqLimit = parseInt(req.query.limit);
-    const search = req.params.search;
-    const params = `?page=1&limit=${req.limit}`;
     const startIndex = (reqPage - 1) * reqLimit;
 
-    if (search) {
-      const books = await Book.findAll({
-        order: [["title", "ASC"]],
-        limit: reqLimit,
-        offset: startIndex
-      });
+    const books = await Book.findAll({
+      order: [["title", "ASC"]],
+      limit: reqLimit,
+      offset: startIndex
+    });
 
-      const booksListed = books.length;
-      const pages = books.length;
+    const booksListed = books.length;
 
-      res.render("books/index", {
-        books,
-        title: "Armada",
-        reqPage,
-        reqLimit,
-        booksListed,
-        pages,
-        params
-      });
-    } else {
-      const books = await Book.findAll({
-        order: [["title", "ASC"]],
-        limit: reqLimit,
-        offset: startIndex
-      });
+    res.render("books/index", {
+      books,
+      title: "Books",
+      reqPage,
+      reqLimit,
+      booksListed
+    });
+  })
+);
 
-      const booksListed = books.length;
-      const pages = books.length;
+router.get(
+  "/search/",
+  asyncHandler(async (req, res) => {
+    const { search } = req.query;
 
-      res.render("books/index", {
-        books,
-        title: "Books",
-        reqPage,
-        reqLimit,
-        booksListed,
-        pages,
-        params
-      });
-    }
+    const books = await Book.findAll({
+      order: [["title", "ASC"]],
+      where: {
+        year: {
+          [Op.like]: ['"%' + search + '%"']
+        }
+      }
+    });
+
+    const booksListed = books.length;
+
+    res.render("books/index", {
+      books,
+      title: "Search: " + search,
+      booksListed
+    });
   })
 );
 
 // get /books/new - Shows the create new book form.
 router.get("/new", (req, res) => {
-  res.render("books/new-book", { book: {}, title: "New Book" });
+  res.render("books/new-book", { book: {}, title: "New Book", urlParams });
 });
 
 // post /books/new - Posts a new book to the database.
@@ -81,7 +80,7 @@ router.post(
     let book;
     try {
       book = await Book.create(req.body);
-      res.redirect("/books/");
+      res.redirect("/books/" + urlParams);
     } catch (error) {
       if (error.name === "SequelizeValidationError") {
         // checking the error
@@ -89,7 +88,8 @@ router.post(
         res.render("books/new-book", {
           book,
           errors: error.errors,
-          title: "New Book"
+          title: "New Book",
+          urlParams
         });
       } else {
         throw error; // error caught in the asyncHandler's catch block
@@ -116,7 +116,11 @@ router.get(
   asyncHandler(async (req, res) => {
     const book = await Book.findByPk(req.params.id);
     if (book) {
-      res.render("books/update-book", { book, title: "Book Details" });
+      res.render("books/update-book", {
+        book,
+        title: "Book Details",
+        urlParams
+      });
     } else {
       res.sendStatus(404);
     }
@@ -132,7 +136,7 @@ router.post(
       book = await Book.findByPk(req.params.id);
       if (book) {
         await book.update(req.body);
-        res.redirect("/books/");
+        res.redirect("/books/" + urlParams);
       } else {
         res.sendStatus(404);
       }
@@ -158,7 +162,7 @@ router.get(
   asyncHandler(async (req, res) => {
     const book = await Book.findByPk(req.params.id);
     if (book) {
-      res.render("books/delete", { book, title: "Delete Book" });
+      res.render("books/delete", { book, title: "Delete Book", urlParams });
     } else {
       res.sendStatus(404);
     }
@@ -172,7 +176,7 @@ router.post(
     const book = await Book.findByPk(req.params.id);
     if (book) {
       await book.destroy();
-      res.redirect("/books");
+      res.redirect("/books/" + urlParams);
     } else {
       res.sendStatus(404);
     }

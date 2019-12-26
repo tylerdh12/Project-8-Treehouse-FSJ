@@ -1,7 +1,7 @@
 extends ../layout
 
 block content
-  form(action='/books/')
+  form(action='/books/search/')
     input(name="search" type="text" id="searchInput" placeholder="Search")
   h1= title
   p
@@ -25,9 +25,11 @@ block content
   div
     if reqPage > 1
       a(href=`?page=${reqPage - 1}&limit=${reqLimit}` class="anchorLeft") < Previous
-
-    each page in pages
-      a(href=`?page=${reqPage + 1}&limit=${reqLimit}` class="pageNumber")= page.index+1 
+    
+    //- - var n = 0;
+    //-   ul
+    //-     while n < books.length
+    //-       a(href=`?page=${reqPage + 1}&limit=${reqLimit}` class="pageNumber")= n+1
 
     if reqLimit === booksListed
       a(href=`?page=${reqPage + 1}&limit=${reqLimit}` class="anchorRight") Next >
