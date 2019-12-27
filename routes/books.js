@@ -39,7 +39,8 @@ router.get(
       title: "Books",
       reqPage,
       reqLimit,
-      booksListed
+      booksListed,
+      urlParams
     });
   })
 );
@@ -47,15 +48,39 @@ router.get(
 router.get(
   "/search/",
   asyncHandler(async (req, res) => {
+    const reqPage = parseInt(req.query.page);
+    const reqLimit = parseInt(req.query.limit);
+    const startIndex = (reqPage - 1) * reqLimit;
     const { search } = req.query;
 
     const books = await Book.findAll({
-      order: [["title", "ASC"]],
       where: {
-        year: {
-          [Op.like]: ['"%' + search + '%"']
-        }
-      }
+        [Op.or]: [
+          {
+            title: {
+              [Op.like]: "%" + search + "%"
+            }
+          },
+          {
+            author: {
+              [Op.like]: "%" + search + "%"
+            }
+          },
+          {
+            genre: {
+              [Op.like]: "%" + search + "%"
+            }
+          },
+          {
+            year: {
+              [Op.like]: "%" + search + "%"
+            }
+          }
+        ]
+      },
+      order: [["title", "ASC"]],
+      limit: reqLimit,
+      offset: startIndex
     });
 
     const booksListed = books.length;
@@ -63,7 +88,11 @@ router.get(
     res.render("books/index", {
       books,
       title: "Search: " + search,
-      booksListed
+      reqPage,
+      reqLimit,
+      booksListed,
+      urlParams,
+      search
     });
   })
 );

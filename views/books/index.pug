@@ -1,8 +1,11 @@
 extends ../layout
 
 block content
-  form(action='/books/search/')
-    input(name="search" type="text" id="searchInput" placeholder="Search")
+  form(action=`/books/search/`)
+    input(name="search" type="text" id="searchInput" placeholder="Search") 
+    input(name="page" type="hidden" id="pageInput" value=`${reqPage}`) 
+    input(name="limit" type="hidden" id="limitInput" value=`${reqLimit}`) 
+    a(class="clearbutton" href=`/books/${urlParams}`) X
   h1= title
   p
     a(href="/books/new", class="button") Create New Book
@@ -21,15 +24,28 @@ block content
             td= book.author
             td= book.genre
             td= book.year
-            
-  div
-    if reqPage > 1
-      a(href=`?page=${reqPage - 1}&limit=${reqLimit}` class="anchorLeft") < Previous
-    
-    //- - var n = 0;
-    //-   ul
-    //-     while n < books.length
-    //-       a(href=`?page=${reqPage + 1}&limit=${reqLimit}` class="pageNumber")= n+1
 
-    if reqLimit === booksListed
-      a(href=`?page=${reqPage + 1}&limit=${reqLimit}` class="anchorRight") Next >
+  if search
+    div
+      if reqPage > 1
+        a(href=`?search=${search}&page=${reqPage - 1}&limit=${reqLimit}` class="anchorLeft") < Previous
+      
+      //- - var n = 0;
+      //-   ul
+      //-     while n < books.length
+      //-       a(href=`?page=${reqPage + 1}&limit=${reqLimit}` class="pageNumber")= n+1
+
+      if reqLimit === booksListed
+        a(href=`?search=${search}&page=${reqPage + 1}&limit=${reqLimit}` class="anchorRight") Next >
+  else
+    div
+      if reqPage > 1
+        a(href=`?page=${reqPage - 1}&limit=${reqLimit}` class="anchorLeft") < Previous
+      
+      //- - var n = 0;
+      //-   ul
+      //-     while n < books.length
+      //-       a(href=`?page=${reqPage + 1}&limit=${reqLimit}` class="pageNumber")= n+1
+
+      if reqLimit === booksListed
+        a(href=`?page=${reqPage + 1}&limit=${reqLimit}` class="anchorRight") Next >
