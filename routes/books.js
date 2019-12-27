@@ -15,10 +15,9 @@ function asyncHandler(cb) {
   };
 }
 
-const urlParams = "?page=1&limit=5";
-// get /books - Shows the full list of books.
+const urlParams = "?page=1&limit=12";
 
-// the commented sections inside are for pagination
+// get /books - Shows the full list of books.
 router.get(
   "/",
   asyncHandler(async (req, res) => {
@@ -26,20 +25,20 @@ router.get(
     const reqLimit = parseInt(req.query.limit);
     const startIndex = (reqPage - 1) * reqLimit;
 
-    const books = await Book.findAll({
+    const books = await Book.findAndCountAll({
       order: [["title", "ASC"]],
       limit: reqLimit,
       offset: startIndex
     });
 
-    const booksListed = books.length;
+    const pages = Math.ceil(books.count / reqLimit);
 
     res.render("books/index", {
       books,
       title: "Books",
       reqPage,
       reqLimit,
-      booksListed,
+      pages,
       urlParams
     });
   })
@@ -53,7 +52,7 @@ router.get(
     const startIndex = (reqPage - 1) * reqLimit;
     const { search } = req.query;
 
-    const books = await Book.findAll({
+    const books = await Book.findAndCountAll({
       where: {
         [Op.or]: [
           {
@@ -83,14 +82,14 @@ router.get(
       offset: startIndex
     });
 
-    const booksListed = books.length;
+    const pages = Math.ceil(books.count / reqLimit);
 
     res.render("books/index", {
       books,
       title: "Search: " + search,
       reqPage,
       reqLimit,
-      booksListed,
+      pages,
       urlParams,
       search
     });
@@ -121,7 +120,10 @@ router.post(
           urlParams
         });
       } else {
-        throw error; // error caught in the asyncHandler's catch block
+        res.status(404).render("404", {
+          status: 404,
+          errorMessage: "We were unable to find what you were looking for!"
+        }); // error caught in the asyncHandler's catch block
       }
     }
   })
@@ -135,7 +137,10 @@ router.get(
     if (book) {
       res.render("books", { book, title: book.title });
     } else {
-      res.sendStatus(404);
+      res.status(404).render("404", {
+        status: 404,
+        errorMessage: "We were unable to find the book you were looking for!"
+      });
     }
   })
 );
@@ -151,7 +156,10 @@ router.get(
         urlParams
       });
     } else {
-      res.sendStatus(404);
+      res.status(404).render("404", {
+        status: 404,
+        errorMessage: "We were unable to find the book you were looking for!"
+      });
     }
   })
 );
@@ -179,7 +187,10 @@ router.post(
           title: "Book Details"
         });
       } else {
-        throw error;
+        res.status(500).render("500", {
+          status: 500,
+          errorMessage: "We were unable to process your request!"
+        });
       }
     }
   })
@@ -193,7 +204,11 @@ router.get(
     if (book) {
       res.render("books/delete", { book, title: "Delete Book", urlParams });
     } else {
-      res.sendStatus(404);
+      res.status(404).render("404", {
+        status: 404,
+        errorMessage:
+          "We were unable to find the book you were looking to delete!"
+      });
     }
   })
 );
@@ -207,7 +222,11 @@ router.post(
       await book.destroy();
       res.redirect("/books/" + urlParams);
     } else {
-      res.sendStatus(404);
+      res.status(404).render("404", {
+        status: 404,
+        errorMessage:
+          "We were unable to find the book you were looking to delete!"
+      });
     }
   })
 );

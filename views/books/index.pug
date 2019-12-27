@@ -2,7 +2,7 @@ extends ../layout
 
 block content
   form(action=`/books/search/`)
-    input(name="search" type="text" id="searchInput" placeholder="Search") 
+    input(name="search" type="text" id="searchInput" placeholder="Search: (Title, Author, Genre or Year)") 
     input(name="page" type="hidden" id="pageInput" value=`${reqPage}`) 
     input(name="limit" type="hidden" id="limitInput" value=`${reqLimit}`) 
     a(class="clearbutton" href=`/books/${urlParams}`) X
@@ -17,7 +17,7 @@ block content
         th Genre
         th Year
       tbody
-        each book in books
+        each book in books.rows
           tr
             td 
               a(href="/books/" + book.id + "/book_details")= book.title
@@ -27,25 +27,29 @@ block content
 
   if search
     div
+
+      - var n = 1;
+      ul(class="page-link-container")
+        while n <= pages
+          a(href=`?search=${search}&page=${n}&limit=${reqLimit}` class="page-links ")
+            li(class=(reqPage === n ? "active" : undefined))= n++
+
       if reqPage > 1
         a(href=`?search=${search}&page=${reqPage - 1}&limit=${reqLimit}` class="anchorLeft") < Previous
       
-      //- - var n = 0;
-      //-   ul
-      //-     while n < books.length
-      //-       a(href=`?page=${reqPage + 1}&limit=${reqLimit}` class="pageNumber")= n+1
-
-      if reqLimit === booksListed
+      if reqPage < pages
         a(href=`?search=${search}&page=${reqPage + 1}&limit=${reqLimit}` class="anchorRight") Next >
   else
     div
+
+      - var n = 1;
+      ul(class="page-link-container")
+        while n <= pages
+          a(href=`?page=${n}&limit=${reqLimit}` class="page-links ")
+            li(class=(reqPage === n ? "active" : undefined))= n++
+
       if reqPage > 1
         a(href=`?page=${reqPage - 1}&limit=${reqLimit}` class="anchorLeft") < Previous
-      
-      //- - var n = 0;
-      //-   ul
-      //-     while n < books.length
-      //-       a(href=`?page=${reqPage + 1}&limit=${reqLimit}` class="pageNumber")= n+1
 
-      if reqLimit === booksListed
+      if reqPage < pages
         a(href=`?page=${reqPage + 1}&limit=${reqLimit}` class="anchorRight") Next >

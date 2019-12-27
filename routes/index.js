@@ -1,6 +1,6 @@
 var express = require("express");
 var router = express.Router();
-const urlParams = "?page=1&limit=5";
+const urlParams = "?page=1&limit=12";
 
 /* GET home page. */
 router.get("/", function(req, res) {
