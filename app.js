@@ -29,6 +29,8 @@ app.get("/*books/", function(req, res) {
 app.use(function(req, res, next) {
   res.status(404).render("404", {
     status: 404,
+    statusMessage: "Page Not Found",
+    statusMessage: "Page Not Found",
     errorMessage: "We were unable to find what you were looking for!"
   });
 });
@@ -41,7 +43,12 @@ app.use(function(err, req, res, next) {
 
   // render the error page
   res.status(err.status || 500);
-  res.render("error");
+  res.render("500", {
+    status: 500,
+    statusMessage: "Internal Server Error",
+    errorMessage:
+      "There has been an Internal Server Error. If this issue persists please contact the developers to help resolve this issue."
+  });
 });
 
 module.exports = app;

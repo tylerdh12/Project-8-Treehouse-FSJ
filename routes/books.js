@@ -10,7 +10,11 @@ function asyncHandler(cb) {
     try {
       await cb(req, res, next);
     } catch (error) {
-      res.status(500).send(error);
+      console.error(error);
+      res.status(500).render("500", {
+        status: "500",
+        errorMessage: "There has been an Error"
+      });
     }
   };
 }
@@ -21,8 +25,10 @@ const urlParams = "?page=1&limit=12";
 router.get(
   "/",
   asyncHandler(async (req, res) => {
-    const reqPage = parseInt(req.query.page);
-    const reqLimit = parseInt(req.query.limit);
+    let reqPage = parseInt(req.query.page);
+    let reqLimit = parseInt(req.query.limit);
+    reqPage = Math.max(1, reqPage ? reqPage : 1);
+    reqLimit = reqLimit ? reqLimit : 12;
     const startIndex = (reqPage - 1) * reqLimit;
 
     const books = await Book.findAndCountAll({
@@ -32,6 +38,7 @@ router.get(
     });
 
     const pages = Math.ceil(books.count / reqLimit);
+    reqPage = Math.max(1, Math.min(reqPage, pages));
 
     res.render("books/index", {
       books,
@@ -47,10 +54,15 @@ router.get(
 router.get(
   "/search/",
   asyncHandler(async (req, res) => {
-    const reqPage = parseInt(req.query.page);
-    const reqLimit = parseInt(req.query.limit);
+    let reqPage = parseInt(req.query.page);
+    let reqLimit = parseInt(req.query.limit);
+    reqPage = reqPage ? reqPage : 1;
+    reqLimit = reqLimit ? reqLimit : 12;
     const startIndex = (reqPage - 1) * reqLimit;
     const { search } = req.query;
+
+    reqPage = reqPage == NaN ? 1 : reqPage;
+    reqLimit = reqLimit == NaN ? 12 : reqLimit;
 
     const books = await Book.findAndCountAll({
       where: {
@@ -83,7 +95,7 @@ router.get(
     });
 
     const pages = Math.ceil(books.count / reqLimit);
-
+    reqPage = Math.max(1, Math.min(reqPage, pages));
     res.render("books/index", {
       books,
       title: "Search: " + search,
@@ -122,6 +134,7 @@ router.post(
       } else {
         res.status(404).render("404", {
           status: 404,
+          statusMessage: "Page Not Found",
           errorMessage: "We were unable to find what you were looking for!"
         }); // error caught in the asyncHandler's catch block
       }
@@ -139,6 +152,7 @@ router.get(
     } else {
       res.status(404).render("404", {
         status: 404,
+        statusMessage: "Book Not Found",
         errorMessage: "We were unable to find the book you were looking for!"
       });
     }
@@ -158,6 +172,7 @@ router.get(
     } else {
       res.status(404).render("404", {
         status: 404,
+        statusMessage: "Book Not Found",
         errorMessage: "We were unable to find the book you were looking for!"
       });
     }
@@ -206,6 +221,7 @@ router.get(
     } else {
       res.status(404).render("404", {
         status: 404,
+        statusMessage: "Book Not Found",
         errorMessage:
           "We were unable to find the book you were looking to delete!"
       });
@@ -224,6 +240,7 @@ router.post(
     } else {
       res.status(404).render("404", {
         status: 404,
+        statusMessage: "Book Not Found",
         errorMessage:
           "We were unable to find the book you were looking to delete!"
       });

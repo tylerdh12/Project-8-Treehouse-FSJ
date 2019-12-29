@@ -3,7 +3,7 @@ extends ../layout
 block content
   form(action=`/books/search/`)
     input(name="search" type="text" id="searchInput" placeholder="Search: (Title, Author, Genre or Year)") 
-    input(name="page" type="hidden" id="pageInput" value=`${reqPage}`) 
+    input(name="page" type="hidden" id="pageInput" value='1') 
     input(name="limit" type="hidden" id="limitInput" value=`${reqLimit}`) 
     a(class="clearbutton" href=`/books/${urlParams}`) X
   h1= title
@@ -45,8 +45,8 @@ block content
       - var n = 1;
       ul(class="page-link-container")
         while n <= pages
-          a(href=`?page=${n}&limit=${reqLimit}` class="page-links ")
-            li(class=(reqPage === n ? "active" : undefined))= n++
+          a(href=`?page=${n}&limit=${reqLimit}` class=(reqPage === n ? "active page-links" : "page-links"))
+            li= n++
 
       if reqPage > 1
         a(href=`?page=${reqPage - 1}&limit=${reqLimit}` class="anchorLeft") < Previous

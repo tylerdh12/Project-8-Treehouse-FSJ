@@ -127,6 +127,19 @@ a.page-links {
   border-radius: 5px;
 }
 
+a.active {
+  margin-top: 30px;
+  text-align: center;
+  display: inline-block;
+  padding: 0.2em 0.6em;
+  background-color: #e7e7e7;
+  border: 1px #019875 solid;
+  box-shadow: 0.2em 0.2em 0.4em #e7e7e7;
+  color: #019875;
+  margin: 5px;
+  border-radius: 5px;
+}
+
 #searchInput {
   float: right;
   margin-block-start: 1.8em;
