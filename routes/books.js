@@ -115,7 +115,7 @@ router.get("/new", (req, res) => {
 
 // post /books/new - Posts a new book to the database.
 router.post(
-  "/",
+  "/new",
   asyncHandler(async (req, res) => {
     let book;
     try {
@@ -148,22 +148,6 @@ router.get(
   asyncHandler(async (req, res) => {
     const book = await Book.findByPk(req.params.id);
     if (book) {
-      res.render("books", { book, title: book.title });
-    } else {
-      res.status(404).render("404", {
-        status: 404,
-        statusMessage: "Book Not Found",
-        errorMessage: "We were unable to find the book you were looking for!"
-      });
-    }
-  })
-);
-
-router.get(
-  "/:id/book_details",
-  asyncHandler(async (req, res) => {
-    const book = await Book.findByPk(req.params.id);
-    if (book) {
       res.render("books/update-book", {
         book,
         title: "Book Details",
@@ -181,7 +165,7 @@ router.get(
 
 // post /books/:id - Updates book info in the database.
 router.post(
-  "/:id/book_details",
+  "/:id",
   asyncHandler(async (req, res) => {
     let book;
     try {

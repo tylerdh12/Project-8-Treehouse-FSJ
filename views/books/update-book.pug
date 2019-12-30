@@ -5,7 +5,7 @@ block content
 
     include error
 
-    form(method='POST', action="/books/" + book.id + "/book_details")
+    form(method='POST', action="/books/" + book.id)
         include form
         p
             input(type="submit" name="update_button" value="Update Book")
